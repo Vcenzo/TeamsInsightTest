@@ -1,0 +1,310 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "automationAccountName": {
+            "type": "String",
+            "defaultValue": "PSTNInsightAutomationAcc",
+            "metadata": {
+                "description": "The name of the Azure Automation Account to create."
+            }
+        },
+        "TenantID": {
+            "type": "String",
+            "metadata": {
+                "description": "Tenant ID"
+            }
+        },
+        "CQDServiceDatasetID": {
+            "type": "String",
+            "metadata": {
+                "description": "CQDServiceDatasetID"
+            }
+        },
+        "PSTNInsightsDatasetID": {
+            "type": "String",
+            "metadata": {
+                "description": "PSTNInsightsDatasetID"
+            }
+        },
+        "SPOSite": {
+            "type": "String",
+            "metadata": {
+                "description": "SharePoint Online Site URL"
+            }
+        },
+        "SPOFolder": {
+            "type": "String",
+            "metadata": {
+                "description": "SharePoint Online Site Folder"
+            }
+        },
+        "svc-pstn insights account": {
+            "type": "String",
+            "metadata": {
+                "description": "svc-pstn insights account"
+            }
+        },
+        "svc-pstn insights password": {
+            "type": "securestring",
+            "metadata": {
+                "description": "svc-pstn insights account"
+            }
+        },
+        "app-PSTN Insights client": {
+            "type": "String",
+            "metadata": {
+                "description": "app-PSTN Insights client"
+            }
+        },
+        "app-PSTN Insights secret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "app-PSTN Insights secret"
+            }
+        },
+        "TimeUTC": {
+            "defaultValue": "[utcNow('s')]",
+            "type": "String"
+        }
+    },
+    
+    "variables": {
+        "TenantID": "[parameters('TenantID')]",
+        "CQDServiceDatasetID": "[parameters('CQDServiceDatasetID')]",
+        "PSTNInsightsDatasetID": "[parameters('PSTNInsightsDatasetID')]",
+        "SPOSite": "[parameters('SPOSite')]",
+        "SPOFolder": "[parameters('SPOFolder')]",
+        "startTime": "[dateTimeAdd(parameters('TimeUTC'), 'P1D')]"   
+    },
+
+    "resources": [
+        {
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2022-08-08",
+            "name": "[parameters('automationAccountName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "sku": {
+                    "name": "Free"
+                },
+                "publicNetworkAccess": false
+            },
+            "resources": [        
+            
+            //Variables
+            {
+                "type": "Microsoft.Automation/automationAccounts/variables",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/TenantID')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "isEncrypted": false,
+                    "value": "[concat('\"', variables('TenantID'), '\"')]",
+                    "description": "TenantID"
+                }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/variables",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/CQDServiceDatasetID')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "isEncrypted": false,
+                    "value": "[concat('\"', variables('CQDServiceDatasetID'), '\"')]",
+                    "description": "CQDServiceDatasetID"
+                }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/variables",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/PSTNInsightsDatasetID')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "isEncrypted": false,
+                    "value": "[concat('\"', variables('PSTNInsightsDatasetID'), '\"')]",
+                    "description": "PSTNInsightsDatasetID"
+                }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/variables",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/SPOSite')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "isEncrypted": false,
+                    "value": "[concat('\"', variables('SPOSite'), '\"')]",
+                    "description": "SPOSite"
+                }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/variables",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/SPOFolder')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "isEncrypted": false,
+                    "value": "[concat('\"', variables('SPOFolder'), '\"')]",
+                    "description": "SPOFolder"
+                }
+            },
+            
+
+            //Credentials
+            {
+                "type": "Microsoft.Automation/automationAccounts/credentials",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/svc-pstn insights')]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "userName": "[parameters('svc-pstn insights account')]",
+                    "password": "[parameters('svc-pstn insights password')]"
+                }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/credentials",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/app-PSTN Insights Dashboard')]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "userName": "[parameters('app-PSTN Insights client')]",
+                    "password": "[parameters('app-PSTN Insights secret')]"
+                }
+            },
+
+            //Schedules
+            {
+                "type": "Microsoft.Automation/automationAccounts/schedules",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/Each Night at 1 00 AM')]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+					"startTime": "[concat(substring(variables('startTime'), 0, sub(length(variables('startTime')), 9)), '01:00:00+02:00')]",
+                    "expiryTime": "9999-12-31T23:59:59.9999999+00:00",
+                    "interval": 1,
+                    "frequency": "Day",
+                    "timeZone": "Europe/Rome"
+                    }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/schedules",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/Each Night at 3 00 AM')]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+					"startTime": "[concat(substring(variables('startTime'), 0, sub(length(variables('startTime')), 9)), '03:00:00+02:00')]",
+                    "expiryTime": "9999-12-31T23:59:59.9999999+00:00",
+                    "interval": 1,
+                    "frequency": "Day",
+                    "timeZone": "Europe/Rome"
+                    }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/schedules",
+                "apiVersion": "2022-08-08",
+                "name": "[concat(parameters('automationAccountName'), '/Each Night at 6 00 AM')]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+					"startTime": "[concat(substring(variables('startTime'), 0, sub(length(variables('startTime')), 9)), '06:00:00+02:00')]",
+                    "expiryTime": "9999-12-31T23:59:59.9999999+00:00",
+                    "interval": 1,
+                    "frequency": "Day",
+                    "timeZone": "Europe/Rome"
+                    }
+            },
+
+            //Runbooks
+            {
+                "type": "Microsoft.Automation/automationAccounts/runbooks",
+                "apiVersion": "2019-06-01",
+                "name": "[concat(parameters('automationAccountName'), '/Export-CQDDataFromServiceDataset')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "runbookType": "PowerShell7",
+                    "logProgress": false,
+                    "logVerbose": false,
+                    "logActivityTrace": 0,
+                    "description": "This is the Export-CQDDataFromServiceDataset runbook."
+                }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/runbooks",
+                "apiVersion": "2019-06-01",
+                "name": "[concat(parameters('automationAccountName'), '/Export-PSTNUsageFromGraphAPI')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "runbookType": "PowerShell7",
+                    "logProgress": false,
+                    "logVerbose": false,
+                    "logActivityTrace": 0,
+                    "description": "This is the Export-PSTNUsageFromGraphAPI runbook."
+                }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/runbooks",
+                "apiVersion": "2020-01-13-preview",
+                "name": "[concat(parameters('automationAccountName'), '/Refresh-PSTNInsightsDataset')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "runbookType": "PowerShell7",
+                    "logProgress": false,
+                    "logVerbose": false,
+                    "logActivityTrace": 0,
+                    "description": "This is the Refresh-PSTNInsightsDataset runbook."
+                }
+            },
+            {
+                "type": "Microsoft.Automation/automationAccounts/runbooks",
+                "apiVersion": "2019-06-01",
+                "name": "[concat(parameters('automationAccountName'), '/Refresh-ServiceDataset')]",
+                "location": "[resourceGroup().location]",
+                "dependsOn": [
+                    "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+                ],
+                "properties": {
+                    "runbookType": "PowerShell7",
+                    "logProgress": false,
+                    "logVerbose": false,
+                    "logActivityTrace": 0,
+                    "description": "This is the Refresh-ServiceDataset runbook."
+                }
+            }
+            ]
+        }
+    ]
+    
+}
