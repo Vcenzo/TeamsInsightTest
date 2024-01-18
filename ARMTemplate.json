@@ -241,14 +241,14 @@
             
             {
                 "type": "Microsoft.Automation/automationAccounts/runbooks",
-                "apiVersion": "2019-06-01",
+                "apiVersion": "2023-11-01",
                 "name": "[concat(parameters('automationAccountName'), '/Export-CQDDataFromServiceDataset')]",
                 "location": "[resourceGroup().location]",
                 "dependsOn": [
                     "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
                 ],
                 "properties": {
-                    "runbookType": "PowerShell7",
+                    "runbookType": "PowerShell72",
                     "logProgress": false,
                     "logVerbose": false,
                     "logActivityTrace": 0,
@@ -257,14 +257,14 @@
             },
             {
                 "type": "Microsoft.Automation/automationAccounts/runbooks",
-                "apiVersion": "2019-06-01",
+                "apiVersion": "2023-11-01",
                 "name": "[concat(parameters('automationAccountName'), '/Export-PSTNUsageFromGraphAPI')]",
                 "location": "[resourceGroup().location]",
                 "dependsOn": [
                     "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
                 ],
                 "properties": {
-                    "runbookType": "PowerShell7",
+                    "runbookType": "PowerShell72",
                     "logProgress": false,
                     "logVerbose": false,
                     "logActivityTrace": 0,
@@ -273,14 +273,14 @@
             },
             {
                 "type": "Microsoft.Automation/automationAccounts/runbooks",
-                "apiVersion": "2020-01-13-preview",
+                "apiVersion": "2023-11-01",
                 "name": "[concat(parameters('automationAccountName'), '/Refresh-PSTNInsightsDataset')]",
                 "location": "[resourceGroup().location]",
                 "dependsOn": [
                     "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
                 ],
                 "properties": {
-                    "runbookType": "PowerShell7",
+                    "runbookType": "PowerShell72",
                     "logProgress": false,
                     "logVerbose": false,
                     "logActivityTrace": 0,
@@ -289,14 +289,14 @@
             },
             {
                 "type": "Microsoft.Automation/automationAccounts/runbooks",
-                "apiVersion": "2019-06-01",
+                "apiVersion": "2023-11-01",
                 "name": "[concat(parameters('automationAccountName'), '/Refresh-ServiceDataset')]",
                 "location": "[resourceGroup().location]",
                 "dependsOn": [
                     "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
                 ],
                 "properties": {
-                    "runbookType": "PowerShell7",
+                    "runbookType": "PowerShell72",
                     "logProgress": false,
                     "logVerbose": false,
                     "logActivityTrace": 0,
